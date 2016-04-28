@@ -29,6 +29,7 @@ NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/vimproc', {'build' : {'mac' : 'make -f make_mac.mak'},}
+NeoBundle 'Shougo/vimshell.vim'
 NeoBundle 'thinca/vim-qfreplace'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'thinca/vim-ref'
@@ -47,6 +48,8 @@ NeoBundle 'kana/vim-submode'
 NeoBundle 'fatih/vim-go'
 NeoBundle 'thinca/vim-template'
 NeoBundle 'vim-scripts/Conque-GDB'
+NeoBundle 'scrooloose/syntastic.git'
+NeoBundle 'scrooloose/nerdtree'
 
 call neobundle#end()
 
@@ -66,6 +69,9 @@ set cursorline
 set number
 set showmatch
 set incsearch
+set completeopt=menuone
+set splitright
+set splitbelow
 
 " バッファ移動用のキーマッピング
 nnoremap <silent> [b :bprevious<CR>
@@ -152,17 +158,12 @@ nnoremap <C-l> :BufExplorer<CR>
 "added by Lee
 syntax on
 
-"拡張子texのファイルを作成した際に、テンプレートを読み込む
-"augroup MyAutoCmd
-"  autocmd!
-"  autocmd BufNewFile *.tex 0r ~/.vim/template/tex.txt
-"augroup END
-
 " thinca/vim-template
 " テンプレート中に含まれる特定文字列を置き換える
 autocmd User plugin-template-loaded call s:template_keywords()
 function! s:template_keywords()
 silent! %s;<+DATE+>;\=strftime('%Y/%m/%d');g
+silent! %s;<+YEAR+>;\=strftime('%Y');g
 silent! %s/<+FILENAME+>/\=expand('%:t:r')/g
 silent! %s/<+UPPERFILENAME+>/\=toupper(expand('%:t:r'))/g
 endfunction
@@ -172,8 +173,22 @@ autocmd User plugin-template-loaded
   \ |   silent! execute 'normal! "_da>'
   \ | endif
 
-"TeXファイル編集時のQuickRunの設定
-let g:quickrun_config['tex'] = {'command' : 'mktex'}
+" 引数なしで起動した時にvimshellを起動
+autocmd VimEnter * nested :call s:StartVim()
+function! s:StartVim()
+  if (@%=='' && s:GetBufByte()==0)
+    execute ':VimShellPop'
+    execute ':NERDTree'
+  endif
+endfunction
+function! s:GetBufByte()
+  let byte=line2byte(line('$')+1)
+  if byte==-1
+    return 0
+  else
+    return byte-1
+  endif
+endfunction
 
 "vim-submodeの設定
 call submode#enter_with('bufmove', 'n', '', '<C-w>>', '<C-w>>')
@@ -192,3 +207,17 @@ nnoremap <C-k> :split<CR> :exe("tjump ".expand('<cword>'))<CR>
 let g:ConqueTerm_Color = 2
 let g:ConqueTerm_CloseOnEnd = 1
 let g:ConqueTerm_StartMessages = 0
+
+"texの文字をそのまま表示
+let g:tex_conceal = ''
+
+"syntastic
+let g:syntastic_enable_signs=1
+let g:syntastic_auto_loc_list=2
+let g:syntastic_cpp_include_dirs=['/usr/local/Cellar/glfw3/3.1.2/include/']
+let g:syntastic_cpp_check_header=1
+let g:syntastic_cpp_compiler='clang++'
+let g:syntastic_cpp_compiler_options=' -std=c++11 -stdlib=libc++'
+
+"vimshell
+let g:vimshell_editor_command='/usr/local/bin/vim'
