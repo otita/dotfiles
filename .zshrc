@@ -18,7 +18,9 @@ export BSTINPUTS
 if which plenv > /dev/null; then eval "$(plenv init -)"; fi
 
 #for pyenv
-if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH=$PYENV_ROOT/bin:$PATH
+eval "$(pyenv init -)"
 
 #for rbenv
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
