@@ -6,19 +6,13 @@ export GOROOT=/usr/local/opt/go/libexec
 PATH=$GOPATH/bin:$PATH
 PATH=$GOROOT/bin:$PATH
 PATH=/Library/TeX/texbin:$PATH
-#export PATH=/usr/local/Cellar/gcc/5.2.0/bin:$PATH
-#export DYLD_LIBRARY_PATH=/usr/local/Cellar/gcc/5.2.0/lib/gcc/5/
 export PYTHONPATH=/usr/local/Cellar/opencv/2.4.7.1/lib/python2.7/site-packages:$PYTHONPATH
 export WORKON_HOME=$HOME/.virtualenvs
 export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
 export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
-source /usr/local/bin/virtualenvwrapper.sh
 BSTINPUTS=$BSTINPUTS:/usr/local/texlive/2015/texmf-dist/pbibtex/bst/
 BSTINPUTS=$BSTINPUTS:/usr/local/texlive/2015/texmf-dist/bibtex/bst/base/
 export BSTINPUTS
-alias st="/Applications/Sublime\ Text\ 2.app/Contents/SharedSupport/bin/subl"
-alias rm="rm -i"
-alias ctags='/usr/local/Cellar/ctags/5.8_1/bin/ctags'
 
 #for plenv
 if which plenv > /dev/null; then eval "$(plenv init -)"; fi
