@@ -1,35 +1,14 @@
-PATH=~/bin:$PATH
 PATH=/usr/local/include:$PATH
 PATH=/usr/local/bin:$PATH
-export GOPATH=$HOME/.go
-export GOROOT=/usr/local/opt/go/libexec
-PATH=$GOPATH/bin:$PATH
-PATH=$GOROOT/bin:$PATH
 PATH=/Library/TeX/texbin:$PATH
-export PYTHONPATH=/usr/local/Cellar/opencv/2.4.7.1/lib/python2.7/site-packages:$PYTHONPATH
-export WORKON_HOME=$HOME/.virtualenvs
-export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python
-export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv
-BSTINPUTS=$BSTINPUTS:/usr/local/texlive/2015/texmf-dist/pbibtex/bst/
-BSTINPUTS=$BSTINPUTS:/usr/local/texlive/2015/texmf-dist/bibtex/bst/base/
-export BSTINPUTS
-
-#for plenv
-if which plenv > /dev/null; then eval "$(plenv init -)"; fi
 
 #for pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH=$PYENV_ROOT/bin:$PATH
-eval "$(pyenv init -)"
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
-#for rbenv
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+export XDG_CONFIG_HOME=$HOME/.config
 
-#https://gist.github.com/mollifier/4964803
-# シンプルな zshrc
-# License : MIT
-# http://mollifier.mit-license.org/
- 
 # 補完機能を有効にする
 autoload -Uz compinit
 compinit
@@ -53,7 +32,17 @@ HISTSIZE=1000000
 SAVEHIST=1000000
 setopt hist_ignore_dups
 setopt share_history
- 
+setopt hist_ignore_space
+setopt hist_verify
+setopt hist_reduce_blanks  
+setopt hist_save_no_dups
+setopt hist_no_store
+setopt hist_expand
+setopt inc_append_history
+bindkey '^P' history-beginning-search-backward
+bindkey '^N' history-beginning-search-forward
+bindkey "^R" history-incremental-search-backward
+bindkey "^S" history-incremental-search-forward
  
 # emacs 風キーバインドにする
 bindkey -e
@@ -69,17 +58,6 @@ setopt no_flow_control
  
 # '#' 以降をコメントとして扱う
 setopt interactive_comments
- 
-# vim:set ft=zsh :
-
-
-# Add environment variable COCOS_CONSOLE_ROOT for cocos2d-x
-export COCOS_CONSOLE_ROOT=/Users/taito-lee/Documents/Live2D/Live2D_SDK_OpenGL_2.0.06_3_jp/cocos2d-x-3.5/tools/cocos2d-console/bin
-export PATH=$COCOS_CONSOLE_ROOT:$PATH
-
-# Add environment variable COCOS_TEMPLATES_ROOT for cocos2d-x
-export COCOS_TEMPLATES_ROOT=/Users/taito-lee/Documents/Live2D/Live2D_SDK_OpenGL_2.0.06_3_jp/cocos2d-x-3.5/templates
-export PATH=$COCOS_TEMPLATES_ROOT:$PATH
 
 autoload colors
 colors
@@ -89,10 +67,7 @@ PROMPT="%{${fg[yellow]}%}%~%{${reset_color}%}
 
 PROMPT2='[%n]> '
 
-# Add environment variable COCOS_CONSOLE_ROOT for cocos2d-x
-export COCOS_CONSOLE_ROOT=/Users/taito-lee/Library/cocos2dx/cocos2d-x-3.9/tools/cocos2d-console/bin
-export PATH=$COCOS_CONSOLE_ROOT:$PATH
+# alias
+#alias run_jupyter='ssh -L 9999:localhost:9999 pisa -fN'
 
-# Add environment variable COCOS_TEMPLATES_ROOT for cocos2d-x
-export COCOS_TEMPLATES_ROOT=/Users/taito-lee/Library/cocos2dx/cocos2d-x-3.9/templates
-export PATH=$COCOS_TEMPLATES_ROOT:$PATH
+alias ctags="`brew --prefix`/bin/ctags"

@@ -1,164 +1,45 @@
-" neobundle
+"Python3 support
+let g:python3_host_prog = expand('$HOME') . '/.pyenv/shims/python3'
+let g:python2_host_prog = expand('$HOME') . '/.pyenv/shims/python2'
 
-set nocompatible
-
-if has('vim_starting')
-  set runtimepath+=~/.vim/bundle/neobundle.vim/
+if &compatible
+  set nocompatible
 endif
 
-call neobundle#begin(expand('~/.vim/bundle/'))
-NeoBundleFetch 'Shougo/neobundle.vim'
+" reset augroup
+augroup MyAutoCmd
+  autocmd!
+augroup END
 
-NeoBundle 'corntrace/bufexplorer'
-NeoBundle 'deton/jasegment.vim'
-NeoBundle 'fuenor/qfixgrep'
-NeoBundle 'fuenor/qfixhowm'
-NeoBundle 'glidenote/memolist.vim'
-NeoBundle 'honza/vim-snippets'
-NeoBundle 'kien/ctrlp.vim'
-NeoBundle 'Lokaltog/vim-easymotion'
-NeoBundle 'Lokaltog/vim-powerline'
-NeoBundle 'mattn/webapi-vim'
-NeoBundle 'mattn/gist-vim'
-NeoBundle 'nanotech/jellybeans.vim'
-NeoBundle 'nathanaelkane/vim-indent-guides'
-NeoBundle 'pentie/VimRepress'
-NeoBundle 'Shougo/neocomplcache'
-NeoBundle 'Shougo/neosnippet'
-NeoBundle 'Shougo/neosnippet-snippets'
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'Shougo/vimfiler'
-NeoBundle 'Shougo/vimproc', {'build' : {'mac' : 'make -f make_mac.mak'},}
-NeoBundle 'Shougo/vimshell.vim'
-NeoBundle 'thinca/vim-qfreplace'
-NeoBundle 'thinca/vim-quickrun'
-NeoBundle 'thinca/vim-ref'
-NeoBundle 'thinca/vim-visualstar'
-NeoBundle 'tpope/vim-fugitive'
-NeoBundle 'tpope/vim-markdown'
-NeoBundle 'tpope/vim-surround'
-NeoBundle 'tyru/open-browser.vim'
-NeoBundle 'vim-ruby/vim-ruby'
-NeoBundle 'yuratomo/gmail.vim'
-NeoBundle 'buftabs'
-NeoBundle 'endwise.vim'
-
-" added by Lee
-NeoBundle 'kana/vim-submode'
-NeoBundle 'fatih/vim-go'
-NeoBundle 'thinca/vim-template'
-NeoBundle 'vim-scripts/Conque-GDB'
-NeoBundle 'scrooloose/syntastic.git'
-NeoBundle 'scrooloose/nerdtree'
-
-call neobundle#end()
-
-filetype plugin indent on
-NeoBundleCheck
-
-set encoding=UTF-8
-set fileencoding=UTF-8
-set termencoding=UTF-8
-set backupdir=~/Documents/Vim_backup
-set directory=~/Documents/Vim_backup
-set expandtab
-set smarttab
-set autoindent
-set tabstop=2 shiftwidth=2 softtabstop=2
-set cursorline
-set number
-set showmatch
-set incsearch
-set completeopt=menuone
-set splitright
-set splitbelow
-
-" バッファ移動用のキーマッピング
-nnoremap <silent> [b :bprevious<CR>
-nnoremap <silent> ]b :bnext<CR>
-nnoremap <silent> [B :bfirst<CR>
-nnoremap <silent> ]B :blast<CR>
-
-" 検索結果のハイライトをEsc連打でクリア
-nnoremap <ESC><ESC> :nohlsearch<CR>
-
-" コマンドラインモードの補完を有効
-set wildmode=longest:full,full
-
-" grep検索設定
-set grepformat=%f:%l:%m,%f:%l%m,%f\ \ %l%m,%f
-set grepprg=grep\ -nh
-
-" カラースキーマ
-colorscheme jellybeans
-let g:jellybeans_use_lowcolor_black=0
-
-" プラグイン
-
-" neocomplecache
-let g:neocomplcache_enable_at_startup=1
-
-" neosnippet
-imap <C-k> <Plug>(neosnippet_expand_or_jump)
-smap <C-k> <Plug>(neosnippet_expand_or_jump)
-imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "<Plug>(neosnippet_expand_or_jump)"
-\: pumvisible()?"\<C-n>":"\<TAB>"
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "<Plug>(neosnippet_expand_or_jump)"
-\: "\<TAB>"
-if has('conceal')
-  set conceallevel=2 concealcursor=i
+" dein settings {{{
+let s:cache_home = empty($XDG_CACHE_HOME) ? expand('~/.cache') : $XDG_CACHE_HOME
+let s:dein_dir = s:cache_home . '/dein'
+let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+if !isdirectory(s:dein_repo_dir)
+  call system('git clone https://github.com/Shougo/dein.vim ' . shellescape(s:dein_repo_dir))
 endif
-let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
+let &runtimepath = s:dein_repo_dir . "," . &runtimepath
 
-" unite
-"let g:unite_enable_start_insert=1
-"nmap <C-o> :Unite line<CR>
-"nmap <C-u> :Unite file_mru buffer file<CR>
+let s:toml_file = fnamemodify(expand('<sfile>'), ':h') . '/dein.toml'
+if dein#load_state(s:dein_dir)
+  call dein#begin(s:dein_dir, [$MYVIMRC, s:toml_file])
+  call dein#load_toml(s:toml_file)
 
-" indent-guides
-let g:indent_guides_enable_on_vim_startup=1
-let g:indent_guides_color_change_percent=30
-let g:indent_guides_guide_size=1
+  call dein#end()
+  call dein#save_state()
+endif
 
-" open-browser
-let g:netw_nogx=1
-nmap gx <Plug>(openbrowser-smart-search)
-vmap gx <Plug>(openbrowser-smart-search)
+if has('vim_starting') && dein#check_install()
+  call dein#install()
+endif
+" }}}
 
-" vim-quickrun
-let g:quickrun_config = {}
-let g:quickrun_config['markdown'] = {'command' : 'bluecloth', 'exec' : '%c -f %s'}
-
-" memolist.vim
-let g:memolist_memo_suffix="markdown"
-let g:memolist_path="~/Dropbox/succi0303/lib/memolist"
-let g:memolist_prompt_tags=1
-let g:memolist_prompt_categories=1
-nnoremap ,mc :MemoNew<CR>
-nnoremap ,ml :MemoList<CR>
-nnoremap ,mg :MemoGrep<CR>
-nnoremap ,mf :exe "CtrlP" g:memolist_path<CR>
-
-" vimrepress
-nnoremap ,bc :BlogNew<CR>
-nnoremap ,bl :BlogList<CR>
-nnoremap ,bp :BlogPreview publish<CR>
-
-" gist.vim
-let g:gist_show_privates=1
-let g:gist_post_private=1
-
-"bufexplorer
-nnoremap <C-l> :BufExplorer<CR>
-
-
-
-"added by Lee
-syntax on
+if has('nvim')
+  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+endif
 
 " thinca/vim-template
+let g:template_basedir = '~/.config/nvim/'
 " テンプレート中に含まれる特定文字列を置き換える
 autocmd User plugin-template-loaded call s:template_keywords()
 function! s:template_keywords()
@@ -173,11 +54,9 @@ autocmd User plugin-template-loaded
   \ |   silent! execute 'normal! "_da>'
   \ | endif
 
-" 引数なしで起動した時にvimshellを起動
 autocmd VimEnter * nested :call s:StartVim()
 function! s:StartVim()
   if (@%=='' && s:GetBufByte()==0)
-    execute ':VimShellPop'
     execute ':NERDTree'
   endif
 endfunction
@@ -199,15 +78,10 @@ call submode#map('bufmove', 'n', '', '>', '<C-w>>')
 call submode#map('bufmove', 'n', '', '<', '<C-w><')
 call submode#map('bufmove', 'n', '', '+', '<C-w>+')
 call submode#map('bufmove', 'n', '', '-', '<C-w>-')
-
+"
 nnoremap <C-h> :vsp<CR> :exe("tjump ".expand('<cword>'))<CR>
 nnoremap <C-k> :split<CR> :exe("tjump ".expand('<cword>'))<CR>
-
-"Conque-GDBの設定
-let g:ConqueTerm_Color = 2
-let g:ConqueTerm_CloseOnEnd = 1
-let g:ConqueTerm_StartMessages = 0
-
+"
 "texの文字をそのまま表示
 let g:tex_conceal = ''
 
@@ -219,5 +93,59 @@ let g:syntastic_cpp_check_header=1
 let g:syntastic_cpp_compiler='clang++'
 let g:syntastic_cpp_compiler_options=' -std=c++11 -stdlib=libc++'
 
-"vimshell
-let g:vimshell_editor_command='/usr/local/bin/vim'
+" バッファ移動用のキーマッピング
+nnoremap <silent> [b :bprevious<CR>
+nnoremap <silent> ]b :bnext<CR>
+nnoremap <silent> [B :bfirst<CR>
+nnoremap <silent> ]B :blast<CR>
+
+" 検索結果のハイライトをEsc連打でクリア
+nnoremap <ESC><ESC> :nohlsearch<CR>
+
+" コマンドラインモードの補完を有効
+set wildmode=longest:full,full
+
+" grep検索設定
+set grepformat=%f:%l:%m,%f:%l%m,%f\ \ %l%m,%f
+set grepprg=grep\ -nh
+
+" カラースキーマ
+colorscheme jellybeans
+let g:jellybeans_use_lowcolor_black=0
+
+" Use deoplete.
+let g:deoplete#enable_at_startup=1
+
+set encoding=UTF-8
+set fileencoding=UTF-8
+set termencoding=UTF-8
+set backupdir=~/Documents/Vim_backup
+set directory=~/Documents/Vim_backup
+set expandtab
+set smarttab
+set autoindent
+set smartindent
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+
+set cursorline
+set number
+set showmatch
+set incsearch
+set completeopt=menuone
+set splitright
+set splitbelow
+set backspace=indent,eol,start
+set ignorecase
+set smartcase
+set clipboard+=unnamedplus
+
+"for shell
+set sh=/usr/local/bin/zsh
+tnoremap <silent> <ESC> <C-\><C-n>
+let g:neoterm_shell='/usr/local/bin/zsh'
+
+"for ctags
+map « :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+map g<S-LeftMouse> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
