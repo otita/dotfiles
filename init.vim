@@ -1,6 +1,6 @@
 "Python3 support
-let g:python3_host_prog = expand('$HOME') . '/.pyenv/shims/python3'
-let g:python2_host_prog = expand('$HOME') . '/.pyenv/shims/python2'
+let g:python2_host_prog = '/usr/local/bin/python2'
+let g:python3_host_prog = '/usr/local/bin/python3'
 
 if &compatible
   set nocompatible
@@ -40,7 +40,6 @@ endif
 
 " thinca/vim-template
 let g:template_basedir = '~/.config/nvim/'
-" テンプレート中に含まれる特定文字列を置き換える
 autocmd User plugin-template-loaded call s:template_keywords()
 function! s:template_keywords()
 silent! %s;<+DATE+>;\=strftime('%Y/%m/%d');g
@@ -48,7 +47,6 @@ silent! %s;<+YEAR+>;\=strftime('%Y');g
 silent! %s/<+FILENAME+>/\=expand('%:t:r')/g
 silent! %s/<+UPPERFILENAME+>/\=toupper(expand('%:t:r'))/g
 endfunction
-" テンプレート中に含まれる'<+CURSOR+>'にカーソルを移動
 autocmd User plugin-template-loaded
   \   if search('<+CURSOR+>')
   \ |   silent! execute 'normal! "_da>'
@@ -69,7 +67,7 @@ function! s:GetBufByte()
   endif
 endfunction
 
-"vim-submodeの設定
+"vim-submode
 call submode#enter_with('bufmove', 'n', '', '<C-w>>', '<C-w>>')
 call submode#enter_with('bufmove', 'n', '', '<C-w><', '<C-w><')
 call submode#enter_with('bufmove', 'n', '', '<C-w>+', '<C-w>+')
@@ -78,38 +76,38 @@ call submode#map('bufmove', 'n', '', '>', '<C-w>>')
 call submode#map('bufmove', 'n', '', '<', '<C-w><')
 call submode#map('bufmove', 'n', '', '+', '<C-w>+')
 call submode#map('bufmove', 'n', '', '-', '<C-w>-')
-"
+
 nnoremap <C-h> :vsp<CR> :exe("tjump ".expand('<cword>'))<CR>
 nnoremap <C-k> :split<CR> :exe("tjump ".expand('<cword>'))<CR>
-"
-"texの文字をそのまま表示
+
+"tex
 let g:tex_conceal = ''
 
 "syntastic
 let g:syntastic_enable_signs=1
 let g:syntastic_auto_loc_list=2
-let g:syntastic_cpp_include_dirs=['/usr/local/Cellar/glfw3/3.1.2/include/']
+let g:syntastic_cpp_include_dirs=[]
 let g:syntastic_cpp_check_header=1
 let g:syntastic_cpp_compiler='clang++'
 let g:syntastic_cpp_compiler_options=' -std=c++11 -stdlib=libc++'
 
-" バッファ移動用のキーマッピング
+" move buffer
 nnoremap <silent> [b :bprevious<CR>
 nnoremap <silent> ]b :bnext<CR>
 nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
 
-" 検索結果のハイライトをEsc連打でクリア
+" clear search result by Esc
 nnoremap <ESC><ESC> :nohlsearch<CR>
 
-" コマンドラインモードの補完を有効
+" command line mode completion
 set wildmode=longest:full,full
 
-" grep検索設定
+" grep
 set grepformat=%f:%l:%m,%f:%l%m,%f\ \ %l%m,%f
 set grepprg=grep\ -nh
 
-" カラースキーマ
+" color schema
 colorscheme jellybeans
 let g:jellybeans_use_lowcolor_black=0
 
@@ -138,8 +136,15 @@ set splitright
 set splitbelow
 set backspace=indent,eol,start
 set ignorecase
+set wildignorecase
+set wildmode=list,full
 set smartcase
 set clipboard+=unnamedplus
+set mouse=a
+
+set foldmethod=indent
+set foldlevel=1
+"set foldclose=all
 
 "for shell
 set sh=/usr/local/bin/zsh

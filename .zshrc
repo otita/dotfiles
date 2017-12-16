@@ -1,6 +1,7 @@
 PATH=/usr/local/include:$PATH
 PATH=/usr/local/bin:$PATH
 PATH=/Library/TeX/texbin:$PATH
+export PATH="/usr/local/opt/qt/bin:$PATH"
 
 #for pyenv
 export PYENV_ROOT="$HOME/.pyenv"
@@ -9,7 +10,7 @@ if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
 export XDG_CONFIG_HOME=$HOME/.config
 
-# 補完機能を有効にする
+# completion
 autoload -Uz compinit
 compinit
 
@@ -62,12 +63,17 @@ setopt interactive_comments
 autoload colors
 colors
 
+# PROMPT
 PROMPT="%{${fg[yellow]}%}%~%{${reset_color}%} 
 [%n]$ "
 
 PROMPT2='[%n]> '
-
-# alias
-#alias run_jupyter='ssh -L 9999:localhost:9999 pisa -fN'
-
-alias ctags="`brew --prefix`/bin/ctags"
+autoload -Uz vcs_info
+setopt prompt_subst
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git:*' stagedstr "%F{yellow}!"
+zstyle ':vcs_info:git:*' unstagedstr "%F{red}+"
+zstyle ':vcs_info:*' formats "%F{green}%c%u[%b]%f"
+zstyle ':vcs_info:*' actionformats '[%b|%a]'
+precmd () { vcs_info }
+RPROMPT=$RPROMPT'${vcs_info_msg_0_}'
